@@ -72,6 +72,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'JSON_INDENT': 4,  
+}
+
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
