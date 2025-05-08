@@ -1,0 +1,65 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { fetchUsers } from '../services/api';
+import '../styles/login.css';
+
+const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      const response = await fetchUsers();
+      const user = response.data.find((u) => u.email === email);
+
+      if (user) {
+        if (user.role === 'admin') {
+          navigate('/admin');
+        } else if (user.role === 'doctor') {
+          navigate('/doctor'); // TODO Strona lekarza 
+        } else if (user.role === 'patient') {
+          navigate('/patient'); // TODO Strona pacjenta 
+        }
+      } else {
+        setError('Nieprawidłowy email lub hasło');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Wystąpił błąd podczas logowania');
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <h1>Logowanie</h1>
+      {error && <div className="error-message">{error}</div>}
+      <form onSubmit={handleLogin}>
+        <input
+          type="email"
+          placeholder="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit">zaloguj się</button>
+      </form>
+      <p>
+        Nie masz konta? <button onClick={() => navigate('/register')}>zarejestruj się</button>
+      </p>
+    </div>
+  );
+};
+
+export default LoginPage;
