@@ -15,4 +15,12 @@ export const createUser = (data) => api.post('users/', data);
 export const createDoctor = (data) => api.post('doctors/', data);
 export const refreshUsers = () => api.get('users/');
 
+// Appointments
+export const fetchAppointments = () => api.get('appointments/');
+export const updateAppointment = (id, data) => api.put(`appointments/${id}/`, data);
+export const createAppointment = (data) => api.post('appointments/', data);
+
+// Authentication
+export const loginUser = (data) => api.post('login/', data);
+
 export default api;
