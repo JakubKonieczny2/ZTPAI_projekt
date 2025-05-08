@@ -30,9 +30,8 @@ const AdminPage = () => {
   };
 
   const handleLogout = () => {
-    // Wylogowanie użytkownika (np. usunięcie tokenu, jeśli istnieje)
-    localStorage.removeItem('authToken'); // Przykład usunięcia tokenu
-    navigate('/'); // Przekierowanie na stronę główną
+    localStorage.removeItem('authToken');
+    navigate('/'); 
   };
 
   return (
