@@ -15,8 +15,4 @@ export const createUser = (data) => api.post('users/', data);
 export const createDoctor = (data) => api.post('doctors/', data);
 export const refreshUsers = () => api.get('users/');
 
-// Auth
-export const login = (credentials) => api.post('auth/', credentials);
-export const logout = () => api.post('logout/');
-
 export default api;
