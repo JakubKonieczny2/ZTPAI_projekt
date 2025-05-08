@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import user_list, user_detail, doctor_list, doctor_detail, appointment_list, appointment_detail
+from .views import user_list, user_detail, doctor_list, doctor_detail, appointment_list, appointment_detail, login_user
 
 urlpatterns = [
     path('users/', user_list, name='user-list'),  
@@ -10,4 +10,6 @@ urlpatterns = [
 
     path('appointments/', appointment_list, name='appointment-list'),
     path('appointments/<int:pk>/', appointment_detail, name='appointment-detail'),
+
+    path('login/', login_user, name='login'),
 ]

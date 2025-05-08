@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from .models import User, Doctor, Appointments
 from .serializers import UserSerializer, DoctorSerializer, AppointmentSerializer
 
@@ -53,6 +53,23 @@ def user_detail(request, pk):
     elif request.method == 'DELETE':
         user.delete()
         return Response({"message": "Usunięto użytkownika"}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def login_user(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    try:
+        user = User.objects.get(email=email)
+        if check_password(password, user.password):
+            return Response({
+                "message": "Zalogowano pomyślnie",
+                "user": UserSerializer(user).data
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Nieprawidłowe hasło"}, status=status.HTTP_401_UNAUTHORIZED)
+    except User.DoesNotExist:
+        return Response({"error": "Użytkownik nie istnieje"}, status=status.HTTP_404_NOT_FOUND)
 
 # Widoki dla Doctor
 @api_view(['GET', 'POST'])
