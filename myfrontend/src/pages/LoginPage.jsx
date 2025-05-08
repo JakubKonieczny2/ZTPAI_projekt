@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchUsers } from '../services/api';
+import { loginUser } from '../services/api';
 import '../styles/login.css';
 
 const LoginPage = () => {
@@ -14,23 +14,19 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await fetchUsers();
-      const user = response.data.find((u) => u.email === email);
+      const response = await loginUser({ email, password });
+      const user = response.data.user;
 
-      if (user) {
-        if (user.role === 'admin') {
-          navigate('/admin');
-        } else if (user.role === 'doctor') {
-          navigate('/doctor'); // TODO Strona lekarza 
-        } else if (user.role === 'patient') {
-          navigate('/patient'); // TODO Strona pacjenta 
-        }
-      } else {
-        setError('Nieprawidłowy email lub hasło');
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else if (user.role === 'doctor') {
+        navigate('/doctor');
+      } else if (user.role === 'patient') {
+        navigate('/patient');
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError('Wystąpił błąd podczas logowania');
+      setError(err.response?.data?.error || 'Wystąpił błąd podczas logowania');
     }
   };
 
