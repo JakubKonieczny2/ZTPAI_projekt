@@ -5,6 +5,8 @@ import UserDetails from './pages/UserDetails';
 import AddUserForm from './components/users/AddUserForm';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import PatientPage from './pages/PatientPage';
+import DoctorPage from './pages/DoctorPage';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/admin/users/:id" element={<UserDetails />} />
         <Route path="/admin/users/add" element={<AddUserForm />} />
+        <Route path="/patient" element={<PatientPage />} />
+        <Route path="/doctor" element={<DoctorPage />} />
       </Routes>
     </Router>
   );
