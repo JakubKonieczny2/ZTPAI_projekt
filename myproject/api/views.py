@@ -14,6 +14,11 @@ def user_list(request):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
+        email = request.data.get('email')
+        if User.objects.filter(email=email).exists():
+            return Response({
+                "error": "Użytkownik z takim adresem email już istnieje"
+            }, status=status.HTTP_400_BAD_REQUEST)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -77,17 +82,24 @@ def doctor_list(request):
         serializer = DoctorSerializer(doctors, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = DoctorSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                "message": "Utworzono lekarza",
-                "data": serializer.data
-            }, status=status.HTTP_201_CREATED)
+        user_id = request.data.get('user')
+        specialization = request.data.get('specialization')
+        if not user_id or not specialization:
+            return Response({"error": "user i specialization są wymagane"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "Użytkownik nie istnieje"}, status=status.HTTP_404_NOT_FOUND)
+        if user.role != 'doctor':
+            return Response({"error": "Użytkownik nie ma roli 'doctor'"}, status=status.HTTP_400_BAD_REQUEST)
+        if Doctor.objects.filter(user=user).exists():
+            return Response({"error": "Lekarz już istnieje"}, status=status.HTTP_400_BAD_REQUEST)
+        doctor = Doctor.objects.create(user=user, specialization=specialization)
+        serializer = DoctorSerializer(doctor)
         return Response({
-            "error": "Nie można utworzyć lekarza",
-            "details": serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+            "message": "Utworzono lekarza",
+            "data": serializer.data
+        }, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def doctor_detail(request, pk):

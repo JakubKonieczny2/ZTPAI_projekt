@@ -3,9 +3,9 @@ from django.contrib.auth.hashers import make_password
 
 class User(models.Model):
     ROLES = (
-        ('admin', 'Admin'),
-        ('doctor', 'Doctor'),
-        ('patient', 'Patient'),
+        ('admin', 'admin'),
+        ('doctor', 'doctor'),
+        ('patient', 'patient'),
     )
 
     username = None
