@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import PatientPage from './pages/PatientPage';
 import DoctorPage from './pages/DoctorPage';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/admin/users/add" element={<AddUserForm />} />
         <Route path="/patient" element={<PatientPage />} />
         <Route path="/doctor" element={<DoctorPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </Router>
   );
