@@ -8,15 +8,20 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DoctorSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-
     class Meta:
         model = Doctor
         fields = ['user', 'specialization']
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    doctor = DoctorSerializer()
-    patient = UserSerializer()
+    doctor = serializers.PrimaryKeyRelatedField(queryset=Doctor.objects.all())
+    patient = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), allow_null=True, required=False)
 
     class Meta:
         model = Appointments
         fields = ['id', 'doctor', 'patient', 'appointment_date', 'appointment_time', 'status']
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['doctor'] = DoctorSerializer(instance.doctor).data
+        rep['patient'] = UserSerializer(instance.patient).data if instance.patient else None
+        return rep

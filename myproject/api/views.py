@@ -6,13 +6,13 @@ from .models import User, Doctor, Appointments
 from .serializers import UserSerializer, DoctorSerializer, AppointmentSerializer
 
 # Widoki dla User
+
 @api_view(['GET', 'POST'])
 def user_list(request):
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
-    
     elif request.method == 'POST':
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -36,7 +36,6 @@ def user_detail(request, pk):
     if request.method == 'GET':
         serializer = UserSerializer(user)
         return Response(serializer.data)
-
     elif request.method == 'PUT':
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
@@ -49,7 +48,6 @@ def user_detail(request, pk):
             "error": "Błąd podczas aktualizacji użytkownika",
             "details": serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-
     elif request.method == 'DELETE':
         user.delete()
         return Response({"message": "Usunięto użytkownika"}, status=status.HTTP_204_NO_CONTENT)
@@ -58,7 +56,6 @@ def user_detail(request, pk):
 def login_user(request):
     email = request.data.get('email')
     password = request.data.get('password')
-
     try:
         user = User.objects.get(email=email)
         if check_password(password, user.password):
@@ -72,13 +69,13 @@ def login_user(request):
         return Response({"error": "Użytkownik nie istnieje"}, status=status.HTTP_404_NOT_FOUND)
 
 # Widoki dla Doctor
+
 @api_view(['GET', 'POST'])
 def doctor_list(request):
     if request.method == 'GET':
         doctors = Doctor.objects.all()
         serializer = DoctorSerializer(doctors, many=True)
         return Response(serializer.data)
-    
     elif request.method == 'POST':
         serializer = DoctorSerializer(data=request.data)
         if serializer.is_valid():
@@ -102,7 +99,6 @@ def doctor_detail(request, pk):
     if request.method == 'GET':
         serializer = DoctorSerializer(doctor)
         return Response(serializer.data)
-
     elif request.method == 'PUT':
         serializer = DoctorSerializer(doctor, data=request.data)
         if serializer.is_valid():
@@ -115,19 +111,18 @@ def doctor_detail(request, pk):
             "error": "Błąd podczas aktualizacji lekarza",
             "details": serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-
     elif request.method == 'DELETE':
         doctor.delete()
         return Response({"message": "Usunięto lekarza"}, status=status.HTTP_204_NO_CONTENT)
 
 # Widoki dla Appointment
+
 @api_view(['GET', 'POST'])
 def appointment_list(request):
     if request.method == 'GET':
         appointments = Appointments.objects.all()
         serializer = AppointmentSerializer(appointments, many=True)
         return Response(serializer.data)
-    
     elif request.method == 'POST':
         serializer = AppointmentSerializer(data=request.data)
         if serializer.is_valid():
@@ -141,7 +136,7 @@ def appointment_list(request):
             "details": serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
 def appointment_detail(request, pk):
     try:
         appointment = Appointments.objects.get(pk=pk)
@@ -152,8 +147,9 @@ def appointment_detail(request, pk):
         serializer = AppointmentSerializer(appointment)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        serializer = AppointmentSerializer(appointment, data=request.data)
+    elif request.method in ['PUT', 'PATCH']:
+        partial = request.method == 'PATCH'
+        serializer = AppointmentSerializer(appointment, data=request.data, partial=partial)
         if serializer.is_valid():
             serializer.save()
             return Response({
