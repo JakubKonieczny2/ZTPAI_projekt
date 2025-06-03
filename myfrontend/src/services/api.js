@@ -4,7 +4,7 @@ const api = axios.create({
   baseURL: '/api/v1/',
   headers: {
     'Content-Type': 'application/json',
-  }
+  },
 });
 
 // Users
@@ -17,7 +17,8 @@ export const refreshUsers = () => api.get('users/');
 
 // Appointments
 export const fetchAppointments = () => api.get('appointments/');
-export const updateAppointment = (id, data) => api.put(`appointments/${id}/`, data);
+
+export const updateAppointment = (id, data) => api.patch(`appointments/${id}/`, data);
 export const createAppointment = (data) => api.post('appointments/', data);
 
 // Authentication
