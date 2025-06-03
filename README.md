@@ -48,6 +48,15 @@ System Rezerwacji Wizyt u Lekarza to aplikacja internetowa umożliwiająca pacje
    python ../seed_db.py
    ```
    Skrypt `seed_db.py` utworzy przykładowych użytkowników, lekarzy i wizyty.
+7. Wykonaj komendę w tabeli appointments
+    ALTER TABLE appointments DROP CONSTRAINT appointments_status_check;
+
+    ALTER TABLE appointments
+    ADD CONSTRAINT appointments_status_check
+    CHECK (
+    (status = 'AVAILABLE' AND patient_id IS NULL) OR
+    (status != 'AVAILABLE' AND patient_id IS NOT NULL)
+    );
 7. Uruchom backend:
    ```bash
    python manage.py runserver
