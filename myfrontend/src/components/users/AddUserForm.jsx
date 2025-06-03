@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUser } from '../../services/api';
+import { createUser, createDoctor } from '../../services/api';
 
 const AddUserForm = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +10,7 @@ const AddUserForm = () => {
     password: '',
     role: 'patient'
   });
+  const [specialization, setSpecialization] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -23,14 +24,23 @@ const AddUserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    
     try {
       const response = await createUser(formData);
-      console.log('User created:', response.data); 
+      const user = response.data.data || response.data;
+      if (formData.role === 'doctor') {
+        if (!specialization) {
+          setError('Specjalizacja jest wymagana dla lekarza');
+          return;
+        }
+        await createDoctor({ user: user.id, specialization });
+      }
       navigate('/admin');
     } catch (err) {
-      console.error('Creation error:', err.response?.data);
-      setError(err.response?.data?.message || 'Wystąpił błąd podczas tworzenia użytkownika');
+      setError(
+        err.response?.data?.error ||
+        err.response?.data?.details?.email?.[0] ||
+        'Wystąpił błąd podczas tworzenia użytkownika'
+      );
     }
   };
 
@@ -88,13 +98,27 @@ const AddUserForm = () => {
           <select
             name="role"
             value={formData.role}
-            onChange={handleChange}
+            onChange={e => {
+              handleChange(e);
+              if (e.target.value !== 'doctor') setSpecialization('');
+            }}
           >
             <option value="patient">Pacjent</option>
             <option value="doctor">Lekarz</option>
-            <option value="admin">Admin</option>
           </select>
         </div>
+        {formData.role === 'doctor' && (
+          <div className="form-group">
+            <label>Specjalizacja:</label>
+            <input
+              type="text"
+              name="specialization"
+              value={specialization}
+              onChange={e => setSpecialization(e.target.value)}
+              required
+            />
+          </div>
+        )}
 
         <button type="submit" className="submit-btn">
           Zapisz
