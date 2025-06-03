@@ -18,11 +18,11 @@ const LoginPage = () => {
 
       localStorage.setItem('userId', user.id);
 
-      if (user.role === 'admin') {
+      if (user.role && user.role.toLowerCase() === 'admin') {
         navigate('/admin');
-      } else if (user.role === 'doctor') {
+      } else if (user.role && user.role.toLowerCase() === 'doctor') {
         navigate('/doctor');
-      } else if (user.role === 'patient') {
+      } else if (user.role && user.role.toLowerCase() === 'patient') {
         navigate('/patient');
       }
     } catch (err) {
