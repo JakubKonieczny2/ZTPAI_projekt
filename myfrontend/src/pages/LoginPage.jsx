@@ -12,10 +12,11 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
-
     try {
       const response = await loginUser({ email, password });
       const user = response.data.user;
+
+      localStorage.setItem('userId', user.id);
 
       if (user.role === 'admin') {
         navigate('/admin');
@@ -32,28 +33,29 @@ const LoginPage = () => {
 
   return (
     <div className="login-container">
-      <h1>Logowanie</h1>
-      {error && <div className="error-message">{error}</div>}
+      <h2>Logowanie</h2>
       <form onSubmit={handleLogin}>
         <input
           type="email"
-          placeholder="email"
+          placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           required
         />
         <input
           type="password"
-          placeholder="password"
+          placeholder="Hasło"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
           required
         />
-        <button type="submit">zaloguj się</button>
+        <button type="submit">Zaloguj się</button>
       </form>
-      <p>
-        Nie masz konta? <button onClick={() => navigate('/register')}>zarejestruj się</button>
-      </p>
+      {error && <div className="error">{error}</div>}
+      <div>
+        Nie masz konta?
+        <a href="/register">Zarejestruj się</a>
+      </div>
     </div>
   );
 };

@@ -23,23 +23,25 @@ const PatientPage = () => {
     getAppointments();
   }, []);
 
+  const userId = Number(localStorage.getItem('userId'));
+  
   const handleReserve = async (appointmentId) => {
     try {
-      await updateAppointment(appointmentId, { status: 'RESERVED' });
-      window.location.reload();
-    } catch (error) {
-      console.error('Error reserving appointment:', error);
-    }
-  };
+    await updateAppointment(appointmentId, { status: 'RESERVED', patient: userId });
+    window.location.reload();
+  } catch (error) {
+    console.error('Error reserving appointment:', error);
+  }
+};
 
   const handleCancel = async (appointmentId) => {
     try {
-      await updateAppointment(appointmentId, { status: 'AVAILABLE' });
-      window.location.reload();
-    } catch (error) {
-      console.error('Error canceling appointment:', error);
-    }
-  };
+    await updateAppointment(appointmentId, { status: 'AVAILABLE', patient: null });
+    window.location.reload();
+  } catch (error) {
+    console.error('Error canceling appointment:', error);
+  }
+};
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
@@ -74,7 +76,7 @@ const PatientPage = () => {
         </tbody>
       </table>
 
-      <h1>Moje zarezerwowane wizyty</h1>
+      <h2>Moje zarezerwowane wizyty</h2>
       <table className="appointments-table">
         <thead>
           <tr>
@@ -99,8 +101,7 @@ const PatientPage = () => {
           ))}
         </tbody>
       </table>
-
-      <button onClick={handleLogout} className="logout-btn">Wyloguj się</button>
+      <button className="logout-btn" onClick={handleLogout}>Wyloguj się</button>
     </div>
   );
 };
