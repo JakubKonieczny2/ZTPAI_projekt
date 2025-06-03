@@ -3,6 +3,15 @@
 ## Opis projektu
 System Rezerwacji Wizyt u Lekarza to aplikacja internetowa umożliwiająca pacjentom rezerwację wizyt u lekarzy. Lekarze mogą dodawać dostępne terminy, a pacjenci mogą je rezerwować. Administratorzy mają możliwość zarządzania użytkownikami oraz dodawania nowych lekarzy.
 
+## Architektura aplikacji
+- **Kontrolery (views):** Odpowiadają za obsługę żądań HTTP i przekazywanie ich do odpowiednich serwisów (np. plik `views.py` w Django).
+- **Serwisy (serializers, logika biznesowa):** Odpowiadają za przetwarzanie danych, walidację i logikę biznesową (`serializers.py`).
+- **Repozytoria (modele):** Warstwa dostępu do bazy danych, definiuje strukturę danych (np. plik `models.py`).
+
+### Przykład modularyzacji
+- Backend podzielony jest na moduły: `api/models.py`, `api/views.py`, `api/serializers.py`.
+- Frontend podzielony jest na foldery: `pages/` (widoki), `components/` (komponenty wielokrotnego użytku), `services/` (logika komunikacji z API), `styles/` (style CSS).
+
 ### Główne funkcjonalności:
 - **Rejestracja i logowanie**: Użytkownicy mogą rejestrować się i logować do systemu w zależności od swojej roli (pacjent, lekarz, administrator).
 - **Rezerwacja wizyt**: Pacjenci mogą przeglądać dostępne terminy i rezerwować wizyty.
